@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name     VGMdb Musicbrainz Links
-// @version  0.2
+// @version  0.3
 // @grant    none
 // @include  https://vgmdb.net/album/*
 // @run-at   document-end
+// @require  https://cdn.jsdelivr.net/npm/barcoder@2.0.1/lib/barcoder.js
 // ==/UserScript==
 
 const relationType = {
@@ -43,12 +44,26 @@ const urlRelationships = fetch(`https://musicbrainz.org/ws/2/url/?query=url%3A${
   }
 })
 
-let barcodeRelationships
+const barcodes = []
 
+// Barcode from album info
 const barcodeLabel = document.evaluate('//td/span[@class="label"]/b[text()="Barcode"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue
 if (barcodeLabel) {
-  const barcode = barcodeLabel.closest('td').nextElementSibling.textContent
-  barcodeRelationships = fetch(`https://musicbrainz.org/ws/2/release/?query=barcode%3A${encodeURIComponent(barcode)}&fmt=json`).then((res) => res.json()).then((response) => {
+  barcodes.push(barcodeLabel.closest('td').nextElementSibling.textContent)
+}
+
+// Extra barcodes in the album notes
+const notes = document.querySelector('#notes')
+if (notes) {
+  const notesBarcodes = [...notes.textContent.matchAll(/\D(\d{8,})\D/g)].map(b => b[1]).filter(b => Barcoder.validate(b))
+  barcodes.push(...notesBarcodes)
+}
+
+let barcodeRelationships
+
+if (barcodes.length > 0) {
+  const query = barcodes.map(b => `barcode%3A${encodeURIComponent(b)}`).join('+')
+  barcodeRelationships = fetch(`https://musicbrainz.org/ws/2/release/?query=${query}&fmt=json`).then((res) => res.json()).then((response) => {
     for (const release of response.releases) {
       addRelease(release.id, release.title, relationType.BARCODE)
     }
