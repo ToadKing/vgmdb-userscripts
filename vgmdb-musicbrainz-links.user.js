@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name     VGMdb Musicbrainz Links
-// @version  0.3
+// @version  0.4
 // @grant    none
 // @include  https://vgmdb.net/album/*
 // @run-at   document-end
@@ -55,7 +55,7 @@ if (barcodeLabel) {
 // Extra barcodes in the album notes
 const notes = document.querySelector('#notes')
 if (notes) {
-  const notesBarcodes = [...notes.textContent.matchAll(/\D(\d{8,})\D/g)].map(b => b[1]).filter(b => Barcoder.validate(b))
+  const notesBarcodes = [...notes.textContent.matchAll(/(?:\D|^)(\d{8,})(?:\D|$)/g)].map(b => b[1]).filter(b => Barcoder.validate(b))
   barcodes.push(...notesBarcodes)
 }
 
