@@ -1,10 +1,11 @@
 // ==UserScript==
-// @name     VGMdb Musicbrainz Links
-// @version  0.6
-// @grant    none
-// @include  https://vgmdb.net/album/*
-// @run-at   document-end
-// @require  https://cdn.jsdelivr.net/npm/barcoder@2.0.1/lib/barcoder.js#sha384-Q7XfhjBd499aEkpkIGJbOe0O+D1GlJDV0MkLLEpcDHWUEkoud48UZFracPIx8cW+
+// @name        VGMdb Musicbrainz Links
+// @description Add MusicBrainz links to VGMdb album pages
+// @version     0.7
+// @grant       none
+// @match       https://vgmdb.net/album/*
+// @run-at      document-end
+// @require     https://cdn.jsdelivr.net/npm/barcoder@2.0.1/lib/barcoder.js#sha384-Q7XfhjBd499aEkpkIGJbOe0O+D1GlJDV0MkLLEpcDHWUEkoud48UZFracPIx8cW+
 // ==/UserScript==
 
 const relationType = {
